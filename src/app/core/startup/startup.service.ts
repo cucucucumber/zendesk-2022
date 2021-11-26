@@ -61,8 +61,8 @@ export class StartupService {
     // }
     // mock
     const app: any = {
-      name: `ng-alain`,
-      description: `Ng-zorro admin panel front-end framework`
+      name: `Zendesk-demo`,
+      description: `Yet a zendesk ticket viewer demo`
     };
     const user: any = {
       name: 'Admin',

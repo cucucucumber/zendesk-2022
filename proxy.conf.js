@@ -9,9 +9,13 @@ module.exports = {
   /**
    * The following means that all requests are directed to the backend `https://localhost:9000/`
    */
-  // '/': {
-  //   target: 'https://localhost:9000/',
-  //   secure: false, // Ignore invalid SSL certificates
-  //   changeOrigin: true
-  // }
+  '/api/v2/tickets.json': {
+    target: 'https://zendeskcodingchallenge3907.zendesk.com/api/v2/tickets.json',
+    secure: true, // Ignore invalid SSL certificates
+    changeOrigin: true,
+    logLevel: 'debug',
+    pathRewrite: {
+      '^/api/v2/tickets.json': ''
+    }
+  }
 };
