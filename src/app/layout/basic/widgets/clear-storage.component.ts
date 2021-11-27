@@ -19,7 +19,7 @@ export class HeaderClearStorageComponent {
   @HostListener('click')
   _click(): void {
     this.modalSrv.confirm({
-      nzTitle: 'Make sure clear all local storage?',
+      nzTitle: 'Sure you want to clear all local storage?',
       nzOnOk: () => {
         localStorage.clear();
         this.messageSrv.success('Clear Finished!');

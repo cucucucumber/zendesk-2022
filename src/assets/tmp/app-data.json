@@ -10,47 +10,47 @@
   },
   "menu": [
     {
-      "text": "主导航",
+      "text": "Navigation",
       "i18n": "menu.main",
       "group": true,
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "仪表盘",
+          "text": "Dashboard",
           "i18n": "menu.dashboard",
           "icon": "anticon-dashboard",
           "children": [
             {
-              "text": "仪表盘V1",
+              "text": "DashboardV1",
               "link": "/dashboard/v1",
               "i18n": "menu.dashboard.v1"
             },
             {
-              "text": "分析页",
+              "text": "Analysis",
               "link": "/dashboard/analysis",
               "i18n": "menu.dashboard.analysis"
             },
             {
-              "text": "监控页",
+              "text": "Monitor",
               "link": "/dashboard/monitor",
               "i18n": "menu.dashboard.monitor"
             },
             {
-              "text": "工作台",
+              "text": "Workplace",
               "link": "/dashboard/workplace",
               "i18n": "menu.dashboard.workplace"
             }
           ]
         },
         {
-          "text": "快捷菜单",
+          "text": "Shortcut",
           "i18n": "menu.shortcut",
           "icon": "anticon-rocket",
           "shortcutRoot": true,
           "children": []
         },
         {
-          "text": "小部件",
+          "text": "Widgets",
           "i18n": "menu.widgets",
           "link": "/widgets",
           "icon": "anticon-appstore",
@@ -65,7 +65,7 @@
       "hideInBreadcrumb": true,
       "children": [
         {
-          "text": "样式",
+          "text": "Style",
           "i18n": "menu.style",
           "icon": "anticon-info",
           "children": [

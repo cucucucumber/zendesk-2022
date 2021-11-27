@@ -9,7 +9,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
     <div class="modal-header">
       <div class="modal-title">Info</div>
     </div>
-    <p>参数：{{ record | json }}</p>
+    <p>Parameter：{{ record | json }}</p>
     <div class="modal-footer"> </div>
   `
 })

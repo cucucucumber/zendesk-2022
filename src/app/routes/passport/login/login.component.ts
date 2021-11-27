@@ -106,8 +106,8 @@ export class UserLoginComponent implements OnDestroy {
       }
     }
 
-    // 默认配置中对所有HTTP请求都会强制 [校验](https://ng-alain.com/auth/getting-started) 用户 Token
-    // 然一般来说登录请求不需要校验，因此可以在请求URL加上：`/login?_allow_anonymous=true` 表示不触发用户 Token 校验
+    // By default (https://ng-alain.com/auth/getting-started) we will verify user Token on all HTTP requests
+    // We can append：`/login?_allow_anonymous=true` to the URL to skip the token verification
     this.loading = true;
     this.cdr.detectChanges();
     this.http
@@ -128,15 +128,14 @@ export class UserLoginComponent implements OnDestroy {
           this.cdr.detectChanges();
           return;
         }
-        // 清空路由复用信息
         this.reuseTabService.clear();
-        // 设置用户Token信息
+        // Set User Token
         // TODO: Mock expired value
         res.user.expired = +new Date() + 10000 * 60 * 5;
 
         this.tokenService.set(res.user);
         this.router.navigateByUrl('/');
-        // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
+        // TODO: If user changed their privay preference, we should reload the service startup
         // this.startupSrv.load().subscribe(() => {
         //   console.log(res.user);
         //   // let url = this.tokenService.referrer!.url || '/';

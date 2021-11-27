@@ -2,9 +2,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TestBed, async } from '@angular/core/testing';
 
 import { DashboardComponent } from './dashboard.component';
-//测试入口，参数为测试名、方法
+//Entry point of the testing procedure
 describe('DashboardComponent', () => {
-  //每个测试用的Setup
+  //Setup for each test
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardComponent],
@@ -18,8 +18,8 @@ describe('DashboardComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  //每个测试用例的TearDown
+  //Teardown for each test
   afterEach(function () {
-    //清除测试数据
+    //We can optionally clean all the testing data
   });
 });

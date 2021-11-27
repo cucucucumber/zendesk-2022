@@ -7,8 +7,8 @@ import { _HttpClient } from '@delon/theme';
   template: `
     <div class="pt-lg">
       <nz-card>
-        <button *ngFor="let t of types" (click)="go(t)" nz-button nzDanger>触发{{ t }}</button>
-        <button nz-button nzType="link" (click)="refresh()">触发刷新Token</button>
+        <button *ngFor="let t of types" (click)="go(t)" nz-button nzDanger>Triggered {{ t }}</button>
+        <button nz-button nzType="link" (click)="refresh()">Reload Token</button>
       </nz-card>
     </div>
   `
@@ -24,11 +24,11 @@ export class ExceptionTriggerComponent {
 
   refresh(): void {
     this.tokenService.set({ token: 'invalid-token' });
-    // 必须提供一个后端地址，无法通过 Mock 来模拟
+    // We must have a backend address
     this.http.post(`https://localhost:5001/auth`).subscribe(
-      res => console.warn('成功', res),
+      res => console.warn('Success', res),
       err => {
-        console.log('最后结果失败', err);
+        console.log('Failed', err);
       }
     );
   }

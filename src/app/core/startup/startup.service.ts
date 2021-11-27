@@ -61,7 +61,7 @@ export class StartupService {
     // }
     // mock
     const app: any = {
-      name: `Zendesk-demo`,
+      name: `Zendesk-2022-Zijian`,
       description: `Yet a zendesk ticket viewer demo`
     };
     const user: any = {
@@ -90,7 +90,7 @@ export class StartupService {
         ]
       }
     ]);
-    // Can be set page suffix title, https://ng-alain.com/theme/title
+    // Can set page suffix title, https://ng-alain.com/theme/title
     this.titleService.suffix = app.name;
 
     return of();
@@ -99,8 +99,8 @@ export class StartupService {
   load(): Observable<void> {
     // http
     // return this.viaHttp();
+    // WARNING!!
     // mock: Don’t use it in a production environment. ViaMock is just to simulate some data to make the scaffolding work normally
-    // mock：请勿在生产环境中这么使用，viaMock 单纯只是为了模拟一些数据使脚手架一开始能正常运行
     return this.viaMock();
   }
 }

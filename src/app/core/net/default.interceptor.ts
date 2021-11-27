@@ -17,25 +17,25 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, mergeMap, switchMap, take } from 'rxjs/operators';
 
 const CODEMESSAGE: { [key: number]: string } = {
-  200: '服务器成功返回请求的数据。',
-  201: '新建或修改数据成功。',
-  202: '一个请求已经进入后台排队（异步任务）。',
-  204: '删除数据成功。',
-  400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-  401: '用户没有权限（令牌、用户名、密码错误）。',
-  403: '用户得到授权，但是访问是被禁止的。',
-  404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
-  406: '请求的格式不可得。',
-  410: '请求的资源被永久删除，且不会再得到的。',
-  422: '当创建一个对象时，发生一个验证错误。',
-  500: '服务器发生错误，请检查服务器。',
-  502: '网关错误。',
-  503: '服务不可用，服务器暂时过载或维护。',
-  504: '网关超时。'
+  200: 'The request succeeded.',
+  201: 'A new resource was created as a result.',
+  202: 'The request has been received but not yet acted upon.',
+  204: 'Deleted succesfully.',
+  400: 'The server could not understand the request due to invalid syntax.',
+  401: 'Unauthenticated Request.',
+  403: 'Forbidden.',
+  404: 'The server can not find the requested resource.',
+  406: 'Contents not acceptables.',
+  410: 'Sorry the resource is gone permanently.',
+  422: 'The request was well-formed but was unable to be followed due to semantic errors.',
+  500: 'The server has encountered a situation it does not know how to handle.',
+  502: 'Bad Gateway.',
+  503: 'The server is not ready to handle the request.',
+  504: 'Gateway Timeout.'
 };
 
 /**
- * 默认HTTP拦截器，其注册细节见 `app.module.ts`
+ * Default HTTP interceptor. For more details see `app.module.ts`
  */
 @Injectable()
 export class DefaultInterceptor implements HttpInterceptor {
@@ -72,26 +72,26 @@ export class DefaultInterceptor implements HttpInterceptor {
     }
 
     const errortext = CODEMESSAGE[ev.status] || ev.statusText;
-    this.notification.error(`请求错误 ${ev.status}: ${ev.url}`, errortext);
+    this.notification.error(`Bad Request ${ev.status}: ${ev.url}`, errortext);
   }
 
   /**
-   * 刷新 Token 请求
+   * Refresh Token Request
    */
   private refreshTokenRequest(): Observable<any> {
     const model = this.tokenSrv.get();
     return this.http.post(`/api/auth/refresh`, null, null, { headers: { refresh_token: model?.refresh_token || '' } });
   }
 
-  // #region 刷新Token方式一：使用 401 重新刷新 Token
+  // #region Method 1: Use 401 to refresh the toekn
 
   private tryRefreshToken(ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
-    // 1、若请求为刷新Token请求，表示来自刷新Token可以直接跳转登录页
+    // 1、If the request is a fresh token request, then we know the new token can direct us to the login page
     if ([`/api/auth/refresh`].some(url => req.url.includes(url))) {
       this.toLogin();
       return throwError(ev);
     }
-    // 2、如果 `refreshToking` 为 `true` 表示已经在请求刷新 Token 中，后续所有请求转入等待状态，直至结果返回后再重新发起请求
+    // 2、else if we are already refreshing a token, then all other requests should be swapped to wait queue
     if (this.refreshToking) {
       return this.refreshToken$.pipe(
         filter(v => !!v),
@@ -99,18 +99,17 @@ export class DefaultInterceptor implements HttpInterceptor {
         switchMap(() => next.handle(this.reAttachToken(req)))
       );
     }
-    // 3、尝试调用刷新 Token
+    // 3、try the refreshed token
     this.refreshToking = true;
     this.refreshToken$.next(null);
 
     return this.refreshTokenRequest().pipe(
       switchMap(res => {
-        // 通知后续请求继续执行
+        // signal the wait queue to continue process
         this.refreshToking = false;
         this.refreshToken$.next(res);
-        // 重新保存新 token
+        // we store the new token and make request again
         this.tokenSrv.set(res);
-        // 重新发起请求
         return next.handle(this.reAttachToken(req));
       }),
       catchError(err => {
@@ -122,12 +121,11 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   /**
-   * 重新附加新 Token 信息
-   *
-   * > 由于已经发起的请求，不会再走一遍 `@delon/auth` 因此需要结合业务情况重新附加新的 Token
+   * Reload the new token
+   * WARNING
+   * The reloading routine depends on our current needs, I am using the very default method
    */
   private reAttachToken(req: HttpRequest<any>): HttpRequest<any> {
-    // 以下示例是以 NG-ALAIN 默认使用 `SimpleInterceptor`
     const token = this.tokenSrv.get()?.token;
     return req.clone({
       setHeaders: {
@@ -138,7 +136,7 @@ export class DefaultInterceptor implements HttpInterceptor {
 
   // #endregion
 
-  // #region 刷新Token方式二：使用 `@delon/auth` 的 `refresh` 接口
+  // #region We can also use the refresh API to reload token
 
   private buildAuthRefresh(): void {
     if (!this.refreshTokenEnabled) {
@@ -167,38 +165,45 @@ export class DefaultInterceptor implements HttpInterceptor {
   // #endregion
 
   private toLogin(): void {
-    this.notification.error(`未登录或登录已过期，请重新登录。`, ``);
+    this.notification.error(`Not Logged In or logging timeout, please try it again.`, ``);
     this.goTo(this.tokenSrv.login_url!);
   }
 
   private handleData(ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     this.checkStatus(ev);
-    // 业务处理：一些通用操作
+    // Deal with some general cases
     switch (ev.status) {
       case 200:
-        // 业务层级错误处理，以下是假定restful有一套统一输出格式（指不管成功与否都有相应的数据格式）情况下进行处理
-        // 例如响应内容：
-        //  错误内容：{ status: 1, msg: '非法参数' }
-        //  正确内容：{ status: 0, response: {  } }
-        // 则以下代码片断可直接适用
+        // I am not sure if error results have the same structures. The best case would be all responses are structured like：
+
+        //  Error Sample:{ status: 1, msg: 'balabala' }
+        //  Correct Sample：{ status: 0, response: {  } }
+
+        // If so we can use the snippet below:
+
         // if (ev instanceof HttpResponse) {
         //   const body = ev.body;
         //   if (body && body.status !== 0) {
         //     this.injector.get(NzMessageService).error(body.msg);
-        //     // 注意：这里如果继续抛出错误会被行254的 catchError 二次拦截，导致外部实现的 Pipe、subscribe 操作被中断，例如：this.http.get('/').subscribe() 不会触发
-        //     // 如果你希望外部实现，需要手动移除行254
+               // WARNING
+               // If we throw the error here, the error will be catached by catcherror at line 263.
+               // Doing so will interrrupt outer functions like Pipe, Subscribe
+               // We can remove line 264 to preserve the outer functions. It depends on usage cases.
         //     return throwError({});
         //   } else {
-        //     // 忽略 Blob 文件体
+        //     // Ignore the Bolb
         //     if (ev.body instanceof Blob) {
         //        return of(ev);
         //     }
-        //     // 重新修改 `body` 内容为 `response` 内容，对于绝大多数场景已经无须再关心业务状态码
+
+               // We can either reshape the contents in "body" to be the form of response, ignoring the status code:
         //     return of(new HttpResponse(Object.assign(ev, { body: body.response })));
-        //     // 或者依然保持完整的格式
+
+        //     // Or we just keep the entire response as it is
         //     return of(ev);
         //   }
         // }
+
         break;
       case 401:
         if (this.refreshTokenEnabled && this.refreshTokenType === 're-request') {
@@ -214,7 +219,7 @@ export class DefaultInterceptor implements HttpInterceptor {
       default:
         if (ev instanceof HttpErrorResponse) {
           console.warn(
-            '未可知错误，大部分是由于后端不支持跨域CORS或无效配置引起，请参考 https://ng-alain.com/docs/server 解决跨域问题',
+            'Unkown Eroor, may be causes by cross-domain access',
             ev
           );
         }
@@ -238,7 +243,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // 统一加上服务端前缀
+    // Add the url prefix
     let url = req.url;
     if (!url.startsWith('https://') && !url.startsWith('http://')) {
       const { baseUrl } = environment.api;
@@ -248,11 +253,11 @@ export class DefaultInterceptor implements HttpInterceptor {
     const newReq = req.clone({ url, setHeaders: this.getAdditionalHeaders(req.headers) });
     return next.handle(newReq).pipe(
       mergeMap(ev => {
-        // 允许统一对请求错误处理
+        // Unify the error handle procedure
         if (ev instanceof HttpResponseBase) {
           return this.handleData(ev, newReq, next);
         }
-        // 若一切都正常，则后续操作
+        // Oh yeahhhhh we can continue!
         return of(ev);
       }),
       catchError((err: HttpErrorResponse) => this.handleData(err, newReq, next))

@@ -19,7 +19,7 @@ function genData(params: any): { total: number; list: any[] } {
 function saveData(id: number, value: any): { msg: string } {
   const item = list.find(w => w.id === id);
   if (!item) {
-    return { msg: '无效用户信息' };
+    return { msg: 'Invalid Credentials' };
   }
   Object.assign(item, value);
   return { msg: 'ok' };
@@ -44,14 +44,14 @@ export const USERS = {
       }
     ],
     notifyCount: 12,
-    country: 'China',
+    country: 'US',
     geographic: {
       province: {
-        label: 'Shanghai',
+        label: 'Los Angeles',
         key: '330000'
       },
       city: {
-        label: 'downtown',
+        label: 'DT',
         key: '330100'
       }
     },
