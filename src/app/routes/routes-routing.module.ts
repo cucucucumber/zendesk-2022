@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SimpleGuard } from '@delon/auth';
@@ -8,6 +9,7 @@ import { LayoutBasicComponent } from '../layout/basic/basic.component';
 import { LayoutPassportComponent } from '../layout/passport/passport.component';
 // dashboard pages
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { InfoModalComponent } from './dashboard/infomodal.component';
 // single pages
 import { CallbackComponent } from './passport/callback.component';
 import { UserLockComponent } from './passport/lock/lock.component';
@@ -54,6 +56,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    CommonModule,
     RouterModule.forRoot(routes, {
       useHash: environment.useHash,
       // NOTICE: If you use `reuse-tab` component and turn on keepingScroll you can set to `disabled`

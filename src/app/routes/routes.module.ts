@@ -1,7 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { NgModule, Type } from '@angular/core';
 import { SharedModule } from '@shared';
+
 // dashboard pages
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { InfoModalComponent } from './dashboard/infomodal.component';
 // single pages
 import { CallbackComponent } from './passport/callback.component';
 import { UserLockComponent } from './passport/lock/lock.component';
@@ -13,17 +16,18 @@ import { RouteRoutingModule } from './routes-routing.module';
 
 const COMPONENTS: Array<Type<void>> = [
   DashboardComponent,
+  InfoModalComponent,
   // passport pages
   UserLoginComponent,
   UserRegisterComponent,
   UserRegisterResultComponent,
   // single pages
   CallbackComponent,
-  UserLockComponent,
+  UserLockComponent
 ];
 
 @NgModule({
-  imports: [SharedModule, RouteRoutingModule],
-  declarations: COMPONENTS,
+  imports: [SharedModule, RouteRoutingModule, CommonModule],
+  declarations: COMPONENTS
 })
 export class RoutesModule {}

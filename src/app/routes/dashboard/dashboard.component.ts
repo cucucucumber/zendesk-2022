@@ -2,7 +2,10 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { STChange, STColumn, STData, STColumnTag } from '@delon/abc/st';
 import { dateTimePickerUtil } from '@delon/util/date-time';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { of } from 'rxjs';
+
+import { InfoModalComponent } from './infomodal.component';
 
 const TAG: STColumnTag = {
   sample: { text: 'sample', color: 'green' },
@@ -16,6 +19,8 @@ const TAG: STColumnTag = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit {
+  constructor(private http: HttpClient, private message: NzMessageService) {}
+
   users: STData[] = [];
   columns: STColumn[] = [
     {
@@ -82,11 +87,21 @@ export class DashboardComponent implements OnInit {
         },
         fn: () => true
       }
+    },
+    {
+      title: 'Info',
+      buttons: [
+        {
+          text: 'More',
+          type: 'modal',
+          modal: {
+            component: InfoModalComponent
+          },
+          click: (_record, modal) => this.message.success(`Reloading, data: ${JSON.stringify(modal)}`)
+        }
+      ]
     }
   ];
-
-  constructor(private http: HttpClient) {}
-
   ngOnInit(): void {
     const headers = new HttpHeaders().append('Authorization', `Basic ${btoa('simth.rock@8iy3.onmicrosoft.com:uSC4q..Mnk7UkNJ')}`);
     this.http.get('/api/v2/tickets.json', { headers }).subscribe((res: any) => {
