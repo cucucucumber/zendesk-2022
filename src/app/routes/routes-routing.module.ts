@@ -25,13 +25,11 @@ const routes: Routes = [
     canActivate: [SimpleGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent, data: { title: '仪表盘', titleI18n: 'dashboard' } },
+      { path: 'dashboard', component: DashboardComponent, data: { title: 'dashboard', titleI18n: 'dashboard' } },
       { path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule) }
-      // 业务子模块
       // { path: 'widgets', loadChildren: () => import('./widgets/widgets.module').then(m => m.WidgetsModule) },
     ]
   },
-  // 空白布局
   // {
   //     path: 'blank',
   //     component: LayoutBlankComponent,
@@ -43,13 +41,12 @@ const routes: Routes = [
     path: 'passport',
     component: LayoutPassportComponent,
     children: [
-      { path: 'login', component: UserLoginComponent, data: { title: '登录', titleI18n: 'Login' } },
-      { path: 'register', component: UserRegisterComponent, data: { title: '注册', titleI18n: 'pro-register' } },
-      { path: 'register-result', component: UserRegisterResultComponent, data: { title: '注册结果', titleI18n: 'pro-register-result' } },
-      { path: 'lock', component: UserLockComponent, data: { title: '锁屏', titleI18n: 'lock' } }
+      { path: 'login', component: UserLoginComponent, data: { title: 'Login', titleI18n: 'Login' } },
+      { path: 'register', component: UserRegisterComponent, data: { title: 'Register', titleI18n: 'pro-register' } },
+      { path: 'register-result', component: UserRegisterResultComponent, data: { title: 'Res', titleI18n: 'pro-register-result' } },
+      { path: 'lock', component: UserLockComponent, data: { title: 'Lock', titleI18n: 'lock' } }
     ]
   },
-  // 单页不包裹Layout
   { path: 'passport/callback/:type', component: CallbackComponent },
   { path: '**', redirectTo: 'exception/404' }
 ];

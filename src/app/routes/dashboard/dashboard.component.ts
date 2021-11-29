@@ -4,7 +4,6 @@ import { STChange, STColumn, STData, STColumnTag } from '@delon/abc/st';
 import { dateTimePickerUtil } from '@delon/util/date-time';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { of } from 'rxjs';
-
 import { InfoModalComponent } from './infomodal.component';
 
 const TAG: STColumnTag = {
@@ -24,31 +23,27 @@ export class DashboardComponent implements OnInit {
   users: STData[] = [];
   columns: STColumn[] = [
     {
-      title: 'ID',
-      index: 'id',
-      type: 'checkbox'
-    },
-    {
       title: 'Subject',
       index: 'subject',
       sort: {
-        compare: (a, b) => a.name.length - b.name.length
+        compare: (a, b) => a.subject.length - b.subject.length
       }
     },
     {
-      title: 'Submitter',
-      index: 'submitter_id',
+      title: 'Requester',
+      index: 'requester_id',
       sort: {
-        compare: (a, b) => a.submitter_id - b.submitter_id
+        compare: (a, b) => a.requester_id - b.requester_id
       },
       filter: {
         type: 'number',
         placeholder: '',
         number: {
-          min: 100000000000,
-          max: 999999999999
+          min: 1,
+          max: 999999999999999
         },
-        fn: (filter, record) => (filter.value != null ? record.age >= +filter.value : true)
+        fn: (filter, record) => (filter.value != null ? record.requester_id == filter.value : true),
+        multiple: true
       }
     },
     {
@@ -57,14 +52,16 @@ export class DashboardComponent implements OnInit {
       index: 'status',
       badge: {
         open: { text: 'open', color: 'success' },
+        pending: { text: 'pending', color: 'processing' },
         close: { text: 'close', color: 'error' }
       },
       filter: {
         menus: [
           { text: 'open', value: 'open' },
+          { text: 'pending', value: 'pending'},
           { text: 'close', value: 'close' }
         ],
-        fn: (filter, record) => record.age >= filter.value[0] && record.age <= filter.value[1],
+        fn: (filter, record) => record.status >= filter.value[0] && record.status <= filter.value[1],
         multiple: true
       }
     },
@@ -89,7 +86,7 @@ export class DashboardComponent implements OnInit {
       }
     },
     {
-      title: 'Info',
+      title: 'Content',
       buttons: [
         {
           text: 'More',
@@ -103,9 +100,8 @@ export class DashboardComponent implements OnInit {
     }
   ];
   ngOnInit(): void {
-    const headers = new HttpHeaders().append('Authorization', `Basic ${btoa('simth.rock@8iy3.onmicrosoft.com:uSC4q..Mnk7UkNJ')}`);
+    const headers = new HttpHeaders();
     this.http.get('/api/v2/tickets.json', { headers }).subscribe((res: any) => {
-      console.log(res);
       const data = res.tickets;
       of(data).subscribe(res => (this.users = res));
     });

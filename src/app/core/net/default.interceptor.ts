@@ -165,7 +165,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   // #endregion
 
   private toLogin(): void {
-    this.notification.error(`Not Logged In or logging timeout, please try it again.`, ``);
+    this.notification.error(`Invalid API Key`, ``);
     this.goTo(this.tokenSrv.login_url!);
   }
 

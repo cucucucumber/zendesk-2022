@@ -30,9 +30,12 @@ export class UserLoginComponent implements OnDestroy {
     private http: _HttpClient,
     private cdr: ChangeDetectorRef
   ) {
+    // add validator in case we want usernames to be emails etc
     this.form = fb.group({
-      userName: [null, [Validators.required, Validators.pattern(/^(admin)$/)]],
-      password: [null, [Validators.required, Validators.pattern(/^(password)$/)]],
+      userName: [null, [Validators.required]],
+      password: [null, [Validators.required]],
+      // Below are for user registrition uses. 
+      // I did not provide the register button since it is not part of this project's focus
       mobile: [null, [Validators.required, Validators.pattern(/^1\d{10}$/)]],
       captcha: [null, [Validators.required]],
       remember: [true]
@@ -118,13 +121,13 @@ export class UserLoginComponent implements OnDestroy {
       })
       .pipe(
         finalize(() => {
-          this.loading = true;
           this.cdr.detectChanges();
         })
       )
       .subscribe(res => {
         if (res.msg !== 'ok') {
           this.error = res.msg;
+          this.loading = false;
           this.cdr.detectChanges();
           return;
         }

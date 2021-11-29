@@ -1,5 +1,7 @@
+import { OverlayModule } from '@angular/cdk/overlay';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TestBed, async } from '@angular/core/testing';
+import { NzMessageServiceModule } from 'ng-zorro-antd/message';
 
 import { DashboardComponent } from './dashboard.component';
 //Entry point of the testing procedure
@@ -8,7 +10,7 @@ describe('DashboardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardComponent],
-      imports: [HttpClientModule]
+      imports: [HttpClientModule, NzMessageServiceModule, OverlayModule]
     }).compileComponents();
   }));
 
